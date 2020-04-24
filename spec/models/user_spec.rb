@@ -112,6 +112,28 @@ describe User, type: :model do
     end
   end
 
+  context '#ordered_rooms' do
+    it 'correctly orders the users rooms' do
+      user = create(:user)
+      room1 = create(:room, owner: user)
+      room2 = create(:room, owner: user)
+      room3 = create(:room, owner: user)
+      room4 = create(:room, owner: user)
+
+      room4.update_attributes(sessions: 1, last_session: "2020-02-24 19:52:57")
+      room3.update_attributes(sessions: 1, last_session: "2020-01-25 19:52:57")
+      room2.update_attributes(sessions: 1, last_session: "2019-09-05 19:52:57")
+      room1.update_attributes(sessions: 1, last_session: "2015-02-24 19:52:57")
+
+      rooms = user.ordered_rooms
+      expect(rooms[0]).to eq(user.main_room)
+      expect(rooms[1]).to eq(room4)
+      expect(rooms[2]).to eq(room3)
+      expect(rooms[3]).to eq(room2)
+      expect(rooms[4]).to eq(room1)
+    end
+  end
+
   context 'password reset' do
     it 'creates token and respective reset digest' do
       user = create(:user)
@@ -145,18 +167,18 @@ describe User, type: :model do
       @admin = create(:user, provider: @user.provider)
       @admin.add_role :admin
 
-      expect(@admin.admin_of?(@user)).to be true
+      expect(@admin.admin_of?(@user, "can_manage_users")).to be true
 
       @super_admin = create(:user, provider: "test")
       @super_admin.add_role :super_admin
 
-      expect(@super_admin.admin_of?(@user)).to be true
+      expect(@super_admin.admin_of?(@user, "can_manage_users")).to be true
     end
 
     it "returns false if the user is NOT an admin of another" do
       @admin = create(:user)
 
-      expect(@admin.admin_of?(@user)).to be false
+      expect(@admin.admin_of?(@user, "can_manage_users")).to be false
     end
 
     it "should get the highest priority role" do
