@@ -37,6 +37,11 @@ it:
         info: Permettere l'accesso solo ad utenti autenticati
         title: Richiedi autenticazione per ogni stanza
         user-info: Devi prima registrarti a CVM Meetings per accedere alla stanza
+      client_logo:
+        change: Cambia immagine
+        info: Cambia il logo mostrato nel client html5
+        placeholder: Indirizzo immagine...
+        title: Logo nel Client HTML5
       branding:
         change: Cambia immagine
         info: Cambia il logo del brand che appare nell'angolo in alto a sinistra
@@ -302,6 +307,7 @@ it:
       name_placeholder: Inserisci il nome della stanza...
       not_blank: Il nome della stanza non può essere vuoto
       title: Crea una nuova stanza
+      branding_banner_url_placeholder: Inserisci l'indirizzo del banner...
     delete_account:
       confirm: "Sicuro di voler eliminare questo account?"
       delete: Sono sicuro. Elimina questo account.
