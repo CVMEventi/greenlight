@@ -15,8 +15,8 @@
 
 <footer class="footer pt-3">
   <p class="text-center mb-1">
-    <%= t("footer.powered_by", href: link_to(t("greenlight"), "https://bigbluebutton.org/2018/07/09/greenlight-2-0/", target: "_blank", rel: "noopener")).html_safe %> <%= Greenlight::Application::VERSION %>
-    <% if legal_url.present? %>
+  © <a href="https://cvm.it">CVM</a> 2020 - P.IVA 02929780969
+  <% if legal_url.present? %>
       <span>
         |
         <%= link_to(t("footer.legal"), legal_url) %>
