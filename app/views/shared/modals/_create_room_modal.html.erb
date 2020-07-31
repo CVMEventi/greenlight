@@ -43,6 +43,14 @@
               </span>
             </div>
 
+            <div class="input-icon mb-2">
+              <span class="input-icon-addon">
+                <i class="fas fa-chalkboard-teacher"></i>
+              </span>
+              <%= f.text_field :branding_banner_url, id: "branding-banner-url", class: "form-control text-center", value: "", placeholder: t("modal.create_room.branding_banner_url_placeholder"), autocomplete: :off %>
+              <div class="invalid-feedback text-left"><%= t("modal.create_room.not_blank") %></div>
+            </div>
+
             <% mute = room_configuration("Room Configuration Mute On Join") %>
             <% if mute != "disabled" %>
               <label class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block <%= "enabled-setting" if mute == "enabled" %>">

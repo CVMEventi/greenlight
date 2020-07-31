@@ -159,6 +159,7 @@ function showCreateRoom(target) {
   $("#create-room-name").val("")
   $("#create-room-access-code").text(getLocalizedString("modal.create_room.access_code_placeholder"))
   $("#room_access_code").val(null)
+  $("#branding-banner-url").val("")
 
   $("#createRoomModal form").attr("action", $("body").data('relative-root'))
   $("#room_mute_on_join").prop("checked", $("#room_mute_on_join").data("default"))
@@ -221,6 +222,7 @@ function showDeleteRoom(target) {
 function updateCurrentSettings(settings_path){
   // Get current room settings and set checkbox
   $.get(settings_path, function(settings) {
+    $("#branding-banner-url").val(settings.brandingBannerUrl)
     $("#room_mute_on_join").prop("checked", $("#room_mute_on_join").data("default") || settings.muteOnStart)
     $("#room_require_moderator_approval").prop("checked", $("#room_require_moderator_approval").data("default") || settings.requireModeratorApproval)
     $("#room_anyone_can_start").prop("checked", $("#room_anyone_can_start").data("default") || settings.anyoneCanStart)

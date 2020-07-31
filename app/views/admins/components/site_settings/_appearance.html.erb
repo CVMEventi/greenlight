@@ -30,6 +30,20 @@
   </div>
   <div class="row">
     <div class="col-12">
+      <div class="mb-6 form-group">
+        <label class="form-label"><%= t("administrator.site_settings.client_logo.title") %></label>
+        <label class="form-label text-muted"><%= t("administrator.site_settings.client_logo.info") %></label>
+        <div class="input-group">
+          <input id="client-logo-url" type="text" class="form-control" value="<%= client_logo_image %>">
+          <span class="input-group-append">
+            <button id="client-logo" onclick="changeClientLogoImage('<%= admin_update_settings_path(setting: 'Client Logo') %>')" class="btn btn-primary" type="button"><%= t("administrator.site_settings.client_logo.change") %></button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
       <div class="form-group">
         <label class="form-label"><%= t("administrator.site_settings.color.title") %></label>
         <label class="form-label text-muted"><%= t("administrator.site_settings.color.info") %></label>

@@ -20,6 +20,11 @@ module AdminsHelper
   include Pagy::Frontend
 
   # Server Rooms
+  
+  # Returns the logo based on user's provider
+  def client_logo_image
+    @settings.get_value("Client Logo") || ""
+  end
 
   # Gets the email of the room owner to which the recording belongs to
   def recording_owner_email(room_id)

@@ -171,6 +171,7 @@ class RoomsController < ApplicationController
     @room_settings = JSON.parse(@room[:room_settings])
     opts[:mute_on_start] = room_setting_with_config("muteOnStart")
     opts[:require_moderator_approval] = room_setting_with_config("requireModeratorApproval")
+    opts[:branding_banner_url] = room_settings["brandingBannerUrl"]
     opts[:record] = record_meeting
 
     begin
@@ -332,6 +333,7 @@ class RoomsController < ApplicationController
       "anyoneCanStart": options[:anyone_can_start] == "1",
       "joinModerator": options[:all_join_moderator] == "1",
       "recording": options[:recording] == "1",
+      "brandingBannerUrl": options[:branding_banner_url],
     }
 
     room_settings.to_json
@@ -340,7 +342,7 @@ class RoomsController < ApplicationController
   def room_params
     params.require(:room).permit(:name, :auto_join, :mute_on_join, :access_code,
       :require_moderator_approval, :anyone_can_start, :all_join_moderator,
-      :recording, :presentation)
+      :branding_banner_url, :recording, :presentation)
   end
 
   # Find the room from the uid.

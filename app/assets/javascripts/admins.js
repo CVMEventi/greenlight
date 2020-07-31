@@ -149,6 +149,12 @@ function clearMaintenanceBanner(path) {
   $.post(path, {value: "", tab: "administration"})
 }
 
+// Change bbb-html5 logo
+function changeClientLogoImage(path) {
+  var url = $("#client-logo-url").val()
+  $.post(path, {value: url})
+}
+
 function mergeUsers() {
   let userToMerge = $("#from-uid").text()
   $.post($("#merge-save-access").data("path"), {merge: userToMerge})
