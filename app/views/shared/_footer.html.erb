@@ -14,7 +14,21 @@
 %>
 
 <footer class="footer pt-3">
-  <p class="text-center mb-1">© <a href="https://cvm.it">CVM</a> 2020 - P.IVA 02929780969</p>
+  <p class="text-center mb-1">
+  © <a href="https://cvm.it">CVM</a> 2020 - P.IVA 02929780969
+    <% if legal_url.present? %>
+      <span>
+        |
+        <%= link_to(t("footer.legal"), legal_url) %>
+      </span> 
+    <% end %>
+    <% if privpolicy_url.present? %>
+      <span>
+        |
+        <%= link_to(t("footer.privpolicy"), privpolicy_url)  %>
+      </span>
+    <% end %>
+  </p>
 </footer>
 
 <%= render "shared/components/cookie_warning" %>
