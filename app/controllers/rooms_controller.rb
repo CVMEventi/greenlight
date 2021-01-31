@@ -33,6 +33,7 @@ class RoomsController < ApplicationController
                 unless: -> { !Rails.configuration.enable_email_verification }
   before_action :verify_room_owner_valid, only: [:show, :join]
   before_action :verify_user_not_admin, only: [:show]
+  skip_before_action :verify_authenticity_token, only: [:join]
 
   # POST /
   def create
@@ -69,11 +70,14 @@ class RoomsController < ApplicationController
 
     # If its the current user's room
     if current_user && (@room.owned_by?(current_user) || @shared_room)
+      # If the user is trying to access their own room but is not allowed to
+      if @room.owned_by?(current_user) && !current_user.role.get_permission("can_create_rooms")
+        return redirect_to cant_create_rooms_path
+      end
+
       # User is allowed to have rooms
       @search, @order_column, @order_direction, recs =
         recordings(@room.bbb_id, params.permit(:search, :column, :direction), true)
-
-      @user_list = shared_user_list if shared_access_allowed
 
       @pagy, @recordings = pagy_array(recs)
     else
@@ -85,6 +89,7 @@ class RoomsController < ApplicationController
 
   # GET /rooms
   def cant_create_rooms
+    return redirect_to root_path unless current_user
     shared_rooms = current_user.shared_rooms
 
     if current_user.shared_rooms.empty?
@@ -132,7 +137,10 @@ class RoomsController < ApplicationController
     begin
       # Don't delete the users home room.
       raise I18n.t("room.delete.home_room") if @room == @room.owner.main_room
-      @room.destroy
+
+      # Destroy all recordings then permanently delete the room
+      delete_all_recordings(@room.bbb_id)
+      @room.destroy(true)
     rescue => e
       flash[:alert] = I18n.t("room.delete.fail", error: e)
     else
@@ -150,11 +158,8 @@ class RoomsController < ApplicationController
   def join_specific_room
     room_uid = params[:join_room][:url].split('/').last
 
-    begin
-      @room = Room.find_by!(uid: room_uid)
-    rescue ActiveRecord::RecordNotFound
-      return redirect_to current_user.main_room, alert: I18n.t("room.no_room.invalid_room_uid")
-    end
+    @room = Room.find_by(uid: room_uid)
+    return redirect_to cant_create_rooms_path, alert: I18n.t("room.no_room.invalid_room_uid") unless @room
 
     redirect_to room_path(@room)
   end
@@ -373,7 +378,7 @@ class RoomsController < ApplicationController
   end
 
   def validate_verified_email
-    redirect_to account_activation_path(current_user) if current_user && !current_user&.activated?
+    redirect_to account_activation_path(digest: current_user.activation_digest) if current_user && !current_user&.activated?
   end
 
   def verify_room_owner_verified
@@ -420,7 +425,8 @@ class RoomsController < ApplicationController
 
   # Checks if the file extension is allowed
   def valid_file_type
-    Rails.configuration.allowed_file_types.split(",").include?(File.extname(room_params[:presentation].original_filename))
+    Rails.configuration.allowed_file_types.split(",")
+         .include?(File.extname(room_params[:presentation].original_filename.downcase))
   end
 
   # Gets the room setting based on the option set in the room configuration
